@@ -16,7 +16,8 @@ import java.util.List;
 public class BeaconListener implements OnyxBeaconsListener {
 
     private static BeaconListener sInstance;
-    public boolean capture;
+    private boolean capture;
+    private Table table;
 
     public BeaconListener() {
         super();
@@ -25,6 +26,10 @@ public class BeaconListener implements OnyxBeaconsListener {
 
     public void setCapture(boolean capture) {
         this.capture = capture;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
     }
 
     public static BeaconListener getInstance() {
@@ -44,6 +49,7 @@ public class BeaconListener implements OnyxBeaconsListener {
             Date now = new Date();
             for (IBeacon beacon : list) {
                     data.add(new String[] {
+                            this.table.toString(),
                             String.valueOf(now.getTime()),
                             String.valueOf(beacon.getMajor()),
                             String.valueOf(beacon.getMinor()),

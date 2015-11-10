@@ -28,6 +28,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="com.onyxbeaconservice.provider.IBeaconProvider"
+            android:authorities="de.private_coding.beaconsquaretest.provider"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver
+            android:name=".receiver.BleReceiver">
+            <intent-filter>
+                <action android:name="de.private_coding.beaconsquaretest.scan" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.ContentReceiver">
+            <intent-filter>
+                <action android:name="de.private_coding.beaconsquaretest.content" />
+            </intent-filter>
+        </receiver>
         <meta-data android:name="clientid" android:value="35603e8875fe0a6ce65fc03451086c47357dd44d" />
         <meta-data android:name="secret" android:value="3c75eccff25b2dea86e210ceea5eff54a7f00032" />
     </application>
