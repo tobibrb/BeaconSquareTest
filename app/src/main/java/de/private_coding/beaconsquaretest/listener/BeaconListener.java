@@ -1,5 +1,7 @@
 package de.private_coding.beaconsquaretest.listener;
 
+import android.util.Log;
+
 import com.onyxbeacon.listeners.OnyxBeaconsListener;
 import com.onyxbeaconservice.IBeacon;
 import com.opencsv.CSVWriter;
@@ -15,6 +17,7 @@ import java.util.List;
  */
 public class BeaconListener implements OnyxBeaconsListener {
 
+    private static final String LOGGER = BeaconListener.class.getSimpleName();
     private static BeaconListener sInstance;
     private boolean capture;
     private Table table;
@@ -44,10 +47,12 @@ public class BeaconListener implements OnyxBeaconsListener {
     @Override
     public void didRangeBeaconsInRegion(List<IBeacon> list) {
         if (capture) {
+            Log.d(LOGGER, "Starting capture mode");
             List<String[]> data = new ArrayList<>();
-            String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+            String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scan.csv";
             Date now = new Date();
             for (IBeacon beacon : list) {
+                Log.d(LOGGER, String.format("Adding data for Beacon: %s, %s", beacon.getMajor(), beacon.getMinor()));
                     data.add(new String[] {
                             this.table.toString(),
                             String.valueOf(now.getTime()),
@@ -57,7 +62,7 @@ public class BeaconListener implements OnyxBeaconsListener {
                     });
             }
             try {
-                CSVWriter writer = new CSVWriter(new FileWriter(csv));
+                CSVWriter writer = new CSVWriter(new FileWriter(csv, true));
                 writer.writeAll(data);
                 writer.close();
             } catch (IOException e) {
