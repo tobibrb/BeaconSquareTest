@@ -9,6 +9,168 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main" tools:context=".MainActivity">
 
-    <TextView android:text="Hello World!" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tableLayout">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:shrinkColumns="1"
+            android:stretchColumns="1">
+
+            <ImageButton
+                android:id="@+id/row0_col0"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:src="@drawable/red"
+                android:layout_margin="5dp" />
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row0_col1"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row0_col2"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row0_col3"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:shrinkColumns="1"
+            android:stretchColumns="1">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row1_col0"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row1_col1"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row1_col2"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row1_col3"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:shrinkColumns="1"
+            android:stretchColumns="1">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row2_col0"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row2_col1"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row2_col2"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row2_col3"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:shrinkColumns="1"
+            android:stretchColumns="1">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row3_col0"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row3_col1"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row3_col2"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:id="@+id/row3_col3"
+                android:src="@drawable/red"
+                android:layout_margin="5dp"/>
+        </TableRow>
+    </TableLayout>
+
 </RelativeLayout>

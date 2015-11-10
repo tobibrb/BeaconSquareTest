@@ -41,9 +41,10 @@ public class BeaconListener implements OnyxBeaconsListener {
         if (capture) {
             List<String[]> data = new ArrayList<>();
             String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+            Date now = new Date();
             for (IBeacon beacon : list) {
                     data.add(new String[] {
-                            String.valueOf(new Date().getTime()),
+                            String.valueOf(now.getTime()),
                             String.valueOf(beacon.getMajor()),
                             String.valueOf(beacon.getMinor()),
                             String.valueOf(beacon.getRssi())
