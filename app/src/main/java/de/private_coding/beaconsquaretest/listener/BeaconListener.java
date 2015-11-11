@@ -27,7 +27,7 @@ public class BeaconListener implements OnyxBeaconsListener {
         this.capture = false;
     }
 
-public static BeaconListener getInstance() {
+    public static BeaconListener getInstance() {
         if (sInstance == null) {
             sInstance = new BeaconListener();
             return sInstance;
@@ -36,10 +36,11 @@ public static BeaconListener getInstance() {
         }
     }
 
-        public void setCapture(boolean capture) {
+    public void setCapture(boolean capture) {
         this.capture = capture;
     }
-public void setRowColumn(String rowColumn) {
+
+    public void setRowColumn(String rowColumn) {
         this.rowColumn = rowColumn;
     }
 
@@ -52,13 +53,13 @@ public void setRowColumn(String rowColumn) {
             Date now = new Date();
             for (IBeacon beacon : list) {
                 Log.d(LOGGER, String.format("Adding data for Beacon: %s, %s", beacon.getMajor(), beacon.getMinor()));
-                    data.add(new String[] {
-                            this.rowColumn,
-                            String.valueOf(now.getTime()),
-                            String.valueOf(beacon.getMajor()),
-                            String.valueOf(beacon.getMinor()),
-                            String.valueOf(beacon.getRssi())
-                    });
+                data.add(new String[]{
+                        this.rowColumn,
+                        String.valueOf(now.getTime()),
+                        String.valueOf(beacon.getMajor()),
+                        String.valueOf(beacon.getMinor()),
+                        String.valueOf(beacon.getRssi())
+                });
             }
             try {
                 CSVWriter writer = new CSVWriter(new FileWriter(csv, true));
