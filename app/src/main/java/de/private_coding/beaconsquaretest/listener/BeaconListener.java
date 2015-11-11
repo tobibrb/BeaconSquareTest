@@ -37,6 +37,11 @@ public class BeaconListener implements OnyxBeaconsListener {
     }
 
     public void setCapture(boolean capture) {
+        if (capture) {
+            Log.d(LOGGER, "Starting capture mode");
+        } else {
+            Log.d(LOGGER, "Stopping capture mode");
+        }
         this.capture = capture;
     }
 
@@ -47,7 +52,6 @@ public class BeaconListener implements OnyxBeaconsListener {
     @Override
     public void didRangeBeaconsInRegion(List<IBeacon> list) {
         if (capture) {
-            Log.d(LOGGER, "Starting capture mode");
             List<String[]> data = new ArrayList<>();
             String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scan.csv";
             Date now = new Date();
