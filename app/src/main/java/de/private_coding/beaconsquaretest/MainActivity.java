@@ -1,11 +1,11 @@
 package de.private_coding.beaconsquaretest;
 
-import android.app.DialogFragment;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         setSupportActionBar(toolbar);
 
         // Show dialog for dimensions
-        DialogFragment dialog = new SizeDialogFragment();
-        dialog.show(getFragmentManager(), "SizeDialogFragment");
+        DialogFragment dialog = SizeDialogFragment.newInstance();
+        dialog.show(getSupportFragmentManager(), "SizeDialogFragment");
 
         // get BeaconManger instance and check for Bluetooth
         mBeaconManger = OnyxBeaconApplication.getOnyxBeaconManager(this);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
 
     // Methods for FragmentListener
     @Override
-    public void onDialogPositiveClick(SizeDialogFragment dialog, int height, int width) {
+    public void onDialogPositiveClick(DialogFragment dialog, int height, int width) {
         // CustomTable
         CustomTable table = new CustomTable(this, height, width);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     }
 
     @Override
-    public void onDialogNegativeClick(SizeDialogFragment dialog) {
+    public void onDialogNegativeClick(DialogFragment dialog) {
         // CustomTable
         CustomTable table = new CustomTable(this, 4, 4);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
