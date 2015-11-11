@@ -1,10 +1,11 @@
 package de.private_coding.beaconsquaretest;
 
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import com.onyxbeacon.OnyxBeaconApplication;
 import com.onyxbeacon.OnyxBeaconManager;
 import com.onyxbeacon.rest.auth.util.AuthenticationMode;
+
+import java.io.File;
 
 import de.private_coding.beaconsquaretest.fragment.SizeDialogFragment;
 import de.private_coding.beaconsquaretest.layout.CustomTable;
@@ -82,8 +85,19 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("message/rfc822");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CSV Scan");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "See attachment");
+                String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scan.csv";
+                File attachment = new File(csv);
+                try {
+                    Uri uri = Uri.fromFile(attachment);
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+                } catch (NullPointerException e) {
+                    Toast.makeText(MainActivity.this, "CSV File not found",Toast.LENGTH_LONG).show();
+                }
             }
         });
 
