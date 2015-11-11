@@ -5,11 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ImageButton;
 
-import java.util.Date;
-
 import de.private_coding.beaconsquaretest.R;
 import de.private_coding.beaconsquaretest.listener.BeaconListener;
-import de.private_coding.beaconsquaretest.listener.Table;
 
 import static java.lang.Thread.sleep;
 
@@ -18,16 +15,16 @@ import static java.lang.Thread.sleep;
  */
 public class CaptureTask extends AsyncTask<Void,Void,Void> {
 
-    private Table table;
+    private String rowColumn;
     private BeaconListener listener;
     private ProgressDialog dialog;
     private Context context;
     private ImageButton button;
 
 
-    public CaptureTask(Context context, ImageButton button, Table table, BeaconListener listener) {
+    public CaptureTask(Context context, ImageButton button, String rowColumn, BeaconListener listener) {
         super();
-        this.table = table;
+        this.rowColumn = rowColumn;
         this.listener = listener;
         this.context = context;
         this.button = button;
@@ -38,12 +35,12 @@ public class CaptureTask extends AsyncTask<Void,Void,Void> {
         super.onPreExecute();
         button.setImageResource(R.drawable.yellow);
         dialog = ProgressDialog.show(context, "",
-                "Doing test. Please wait...", false);
+                "Doing stuff and things. Please wait...", false);
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        listener.setTable(table);
+        listener.setRowColumn(rowColumn);
         listener.setCapture(true);
         try {
             sleep(10000);

@@ -1,28 +1,29 @@
 package de.private_coding.beaconsquaretest;
 
+import android.app.DialogFragment;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageButton;
+import android.view.View;
 import android.widget.Toast;
 
 import com.onyxbeacon.OnyxBeaconApplication;
 import com.onyxbeacon.OnyxBeaconManager;
 import com.onyxbeacon.rest.auth.util.AuthenticationMode;
 
+import de.private_coding.beaconsquaretest.fragment.SizeDialogFragment;
+import de.private_coding.beaconsquaretest.layout.CustomTable;
 import de.private_coding.beaconsquaretest.listener.BeaconListener;
-import de.private_coding.beaconsquaretest.listener.Table;
 import de.private_coding.beaconsquaretest.receiver.BleReceiver;
 import de.private_coding.beaconsquaretest.receiver.ContentReceiver;
-import de.private_coding.beaconsquaretest.task.CaptureTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SizeDialogFragment.SizeFragmentListener{
 
     private static final String LOGGER = MainActivity.class.getSimpleName();
     private String bleIntentFilter;
@@ -30,35 +31,22 @@ public class MainActivity extends AppCompatActivity {
 
     private OnyxBeaconManager mBeaconManger;
 
-    private BeaconListener mBeaconListener;
     private ContentReceiver mContentReceiver;
     private BleReceiver mBleReceiver;
     private boolean bleRegistered;
     private boolean receiverRegistered;
 
-    private ImageButton row0col0;
-    private ImageButton row0col1;
-    private ImageButton row0col2;
-    private ImageButton row0col3;
-    private ImageButton row1col0;
-    private ImageButton row1col1;
-    private ImageButton row1col2;
-    private ImageButton row1col3;
-    private ImageButton row2col0;
-    private ImageButton row2col1;
-    private ImageButton row2col2;
-    private ImageButton row2col3;
-    private ImageButton row3col0;
-    private ImageButton row3col1;
-    private ImageButton row3col2;
-    private ImageButton row3col3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Show dialog for dimensions
+        DialogFragment dialog = new SizeDialogFragment();
+        dialog.show(getFragmentManager(), "SizeDialogFragment");
 
         // get BeaconManger instance and check for Bluetooth
         mBeaconManger = OnyxBeaconApplication.getOnyxBeaconManager(this);
@@ -68,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // get BeaconListener
-        mBeaconListener = BeaconListener.getInstance();
+        BeaconListener beaconListener = BeaconListener.getInstance();
 
         // Enable scanning for beacons
         mBeaconManger.setForegroundMode(true);
@@ -76,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Register for Onyx content
         mContentReceiver = ContentReceiver.getInstance();
-        mContentReceiver.setOnyxBeaconListener(mBeaconListener);
+        mContentReceiver.setOnyxBeaconListener(beaconListener);
 
         // Register for BLE events
         mBleReceiver = BleReceiver.getInstance();
@@ -90,26 +78,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(mContentReceiver, new IntentFilter(contentIntentFilter));
         receiverRegistered = true;
 
-        // initalize ImageButtons
-        row0col0 = (ImageButton) findViewById(R.id.row0_col0);
-        row0col1 = (ImageButton) findViewById(R.id.row0_col1);
-        row0col2 = (ImageButton) findViewById(R.id.row0_col2);
-        row0col3 = (ImageButton) findViewById(R.id.row0_col3);
-        row1col0 = (ImageButton) findViewById(R.id.row1_col0);
-        row1col1 = (ImageButton) findViewById(R.id.row1_col1);
-        row1col2 = (ImageButton) findViewById(R.id.row1_col2);
-        row1col3 = (ImageButton) findViewById(R.id.row1_col3);
-        row2col0 = (ImageButton) findViewById(R.id.row2_col0);
-        row2col1 = (ImageButton) findViewById(R.id.row2_col1);
-        row2col2 = (ImageButton) findViewById(R.id.row2_col2);
-        row2col3 = (ImageButton) findViewById(R.id.row2_col3);
-        row3col0 = (ImageButton) findViewById(R.id.row3_col0);
-        row3col1 = (ImageButton) findViewById(R.id.row3_col1);
-        row3col2 = (ImageButton) findViewById(R.id.row3_col2);
-        row3col3 = (ImageButton) findViewById(R.id.row3_col3);
-
-        initializeOnClickListener();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,121 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-    }
 
-    private void initializeOnClickListener() {
-        // create OnClickListener for all ImageButtons
-        row0col0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row0col0, Table.row0col0, mBeaconListener).execute();
-            }
-        });
-
-        row0col1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row0col1, Table.row0col1, mBeaconListener).execute();
-            }
-        });
-
-        row0col2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row0col2, Table.row0col2, mBeaconListener).execute();
-            }
-        });
-
-        row0col3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row0col3, Table.row0col3, mBeaconListener).execute();
-            }
-        });
-
-        row1col0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row1col0, Table.row1col0, mBeaconListener).execute();
-            }
-        });
-
-        row1col1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row1col1, Table.row1col1, mBeaconListener).execute();
-            }
-        });
-
-        row1col2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row1col2, Table.row1col2, mBeaconListener).execute();
-            }
-        });
-
-        row1col3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row1col3, Table.row1col3, mBeaconListener).execute();
-            }
-        });
-
-        row2col0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row2col0, Table.row2col0, mBeaconListener).execute();
-            }
-        });
-
-        row2col1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row2col1, Table.row2col1, mBeaconListener).execute();
-            }
-        });
-
-        row2col2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row2col2, Table.row2col2, mBeaconListener).execute();
-            }
-        });
-
-        row2col3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row2col3, Table.row2col3, mBeaconListener).execute();
-            }
-        });
-
-        row3col0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row3col0, Table.row3col0, mBeaconListener).execute();
-            }
-        });
-
-        row3col1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row3col1, Table.row3col1, mBeaconListener).execute();
-            }
-        });
-
-        row3col2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row3col2, Table.row3col2, mBeaconListener).execute();
-            }
-        });
-
-        row3col3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new CaptureTask(MainActivity.this, row3col3, Table.row3col3, mBeaconListener).execute();
-            }
-        });
     }
 
     @Override
@@ -294,5 +148,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Methods for FragmentListener
+    @Override
+    public void onDialogPositiveClick(SizeDialogFragment dialog, int height, int width) {
+        // CustomTable
+        CustomTable table = new CustomTable(this, height, width);
+        CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        rootLayout.addView(table);
+    }
+
+    @Override
+    public void onDialogNegativeClick(SizeDialogFragment dialog) {
+        // CustomTable
+        CustomTable table = new CustomTable(this, 4, 4);
+        CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        rootLayout.addView(table);
     }
 }

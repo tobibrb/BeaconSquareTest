@@ -20,7 +20,7 @@ public class BeaconListener implements OnyxBeaconsListener {
     private static final String LOGGER = BeaconListener.class.getSimpleName();
     private static BeaconListener sInstance;
     private boolean capture;
-    private Table table;
+    private String rowColumn;
 
     public BeaconListener() {
         super();
@@ -31,11 +31,13 @@ public class BeaconListener implements OnyxBeaconsListener {
         this.capture = capture;
     }
 
-    public void setTable(Table table) {
-        this.table = table;
+    public void setCapture(boolean capture) {
+        this.capture = capture;
     }
 
-    public static BeaconListener getInstance() {
+    public void setRowColumn(String rowColumn) {
+        this.rowColumn = rowColumn;
+    }    public static BeaconListener getInstance() {
         if (sInstance == null) {
             sInstance = new BeaconListener();
             return sInstance;
@@ -54,7 +56,7 @@ public class BeaconListener implements OnyxBeaconsListener {
             for (IBeacon beacon : list) {
                 Log.d(LOGGER, String.format("Adding data for Beacon: %s, %s", beacon.getMajor(), beacon.getMinor()));
                     data.add(new String[] {
-                            this.table.toString(),
+                            this.rowColumn,
                             String.valueOf(now.getTime()),
                             String.valueOf(beacon.getMajor()),
                             String.valueOf(beacon.getMinor()),
