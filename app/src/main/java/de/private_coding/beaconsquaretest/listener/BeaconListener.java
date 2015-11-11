@@ -27,23 +27,20 @@ public class BeaconListener implements OnyxBeaconsListener {
         this.capture = false;
     }
 
-    public void setCapture(boolean capture) {
-        this.capture = capture;
-    }
-
-    public void setCapture(boolean capture) {
-        this.capture = capture;
-    }
-
-    public void setRowColumn(String rowColumn) {
-        this.rowColumn = rowColumn;
-    }    public static BeaconListener getInstance() {
+public static BeaconListener getInstance() {
         if (sInstance == null) {
             sInstance = new BeaconListener();
             return sInstance;
         } else {
             return sInstance;
         }
+    }
+
+        public void setCapture(boolean capture) {
+        this.capture = capture;
+    }
+public void setRowColumn(String rowColumn) {
+        this.rowColumn = rowColumn;
     }
 
     @Override
