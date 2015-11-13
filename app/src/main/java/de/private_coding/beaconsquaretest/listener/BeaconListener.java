@@ -17,12 +17,14 @@ public class BeaconListener implements OnyxBeaconsListener {
 
     private static final String LOGGER = BeaconListener.class.getSimpleName();
     private static BeaconListener sInstance;
+    private BeaconCsvParser parser;
     private boolean capture;
     private String rowColumn;
 
     public BeaconListener() {
         super();
         this.capture = false;
+        this.parser = BeaconCsvParser.getInstance();
     }
 
     public static BeaconListener getInstance() {
@@ -50,11 +52,10 @@ public class BeaconListener implements OnyxBeaconsListener {
     @Override
     public void didRangeBeaconsInRegion(List<IBeacon> list) {
         if (capture) {
-            BeaconCsvParser parser = BeaconCsvParser.getInstance();
             Date now = new Date();
             for (IBeacon beacon : list) {
                 Log.d(LOGGER, String.format("Adding data for Beacon: %s, %s", beacon.getMajor(), beacon.getMinor()));
-                parser.createTestData(
+                this.parser.createTestData(
                         this.rowColumn,
                         beacon.getMajor(),
                         beacon.getMinor(),
