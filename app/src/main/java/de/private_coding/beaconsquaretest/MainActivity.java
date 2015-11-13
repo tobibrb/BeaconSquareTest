@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int height, int width) {
         // CustomTable
-        CustomTable table = new CustomTable(this, height, width);
+        CustomTable table = new CustomTable(this, this, height, width);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
     }
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // CustomTable
-        CustomTable table = new CustomTable(this, 4, 4);
+        CustomTable table = new CustomTable(this, this, 4, 4);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
     }

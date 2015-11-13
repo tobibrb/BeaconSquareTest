@@ -2,6 +2,9 @@ package de.private_coding.beaconsquaretest.layout;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -11,16 +14,24 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.private_coding.beaconsquaretest.R;
-import de.private_coding.beaconsquaretest.listener.BeaconListener;
-import de.private_coding.beaconsquaretest.task.CaptureTask;
+import de.private_coding.beaconsquaretest.fragment.TestDetailsDialogFragment;
 
 /**
  * Created by Bartz, Tobias on 11.11.2015 at 15:25.
  */
 public class CustomTable extends TableLayout {
 
-    public CustomTable(final Context context, int height, int width) {
+    private static Map<String, ImageButton> buttonMap = new HashMap<>();
+
+    public static ImageButton getImageButton(String key) {
+        return buttonMap.get(key);
+    }
+
+    public CustomTable(final AppCompatActivity activity, final Context context, int height, int width) {
         super(context);
 
         // Display metric
@@ -68,9 +79,16 @@ public class CustomTable extends TableLayout {
                 button.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new CaptureTask(context, button, String.format("%s/%s", finalI, finalJ), BeaconListener.getInstance()).execute();
+                        DialogFragment dialog = TestDetailsDialogFragment.newInstance();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("row", finalI);
+                        bundle.putInt("column", finalJ);
+                        dialog.setArguments(bundle);
+                        dialog.show(activity.getSupportFragmentManager(), "TestDetailsDialogFragment");
+                        //new CaptureTask(context, button, String.format("%s/%s", finalI, finalJ), BeaconListener.getInstance()).execute();
                     }
                 });
+                buttonMap.put(String.format("%s/%s", i, j), button);
                 row.addView(button);
             }
             this.addView(row);
