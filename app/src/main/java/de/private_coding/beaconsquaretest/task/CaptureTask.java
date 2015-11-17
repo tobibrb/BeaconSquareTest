@@ -2,7 +2,9 @@ package de.private_coding.beaconsquaretest.task;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.widget.ImageButton;
 
 import de.private_coding.beaconsquaretest.R;
@@ -43,8 +45,12 @@ public class CaptureTask extends AsyncTask<Void,Void,Void> {
     protected Void doInBackground(Void... params) {
         listener.setRowColumn(rowColumn);
         listener.setCapture(true);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        int time = preferences.getInt("testTimeKey", 10);
+
         try {
-            sleep(10000);
+            sleep(time*1000); //wird hier die Messdauer eingetragen???
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
