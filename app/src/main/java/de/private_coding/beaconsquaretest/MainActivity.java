@@ -1,12 +1,9 @@
 package de.private_coding.beaconsquaretest;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -30,7 +27,7 @@ import de.private_coding.beaconsquaretest.listener.BeaconListener;
 import de.private_coding.beaconsquaretest.receiver.BleReceiver;
 import de.private_coding.beaconsquaretest.receiver.ContentReceiver;
 
-public class MainActivity extends AppCompatActivity implements SizeDialogFragment.SizeFragmentListener, SettingsDialogFragment.SettingsFragmentListener {
+public class MainActivity extends AppCompatActivity implements SizeDialogFragment.SizeFragmentListener {
 
     private static final String LOGGER = MainActivity.class.getSimpleName();
     private String bleIntentFilter;
@@ -163,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             DialogFragment settingsDialog = SettingsDialogFragment.newInstance();
+
             settingsDialog.show(getSupportFragmentManager(), "Settings");
             return true;
         }
@@ -177,21 +175,6 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         CustomTable table = new CustomTable(this, this, height, width);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
-    }
-
-    @Override
-    public void onSettingsDialogPositiveClick(DialogFragment dialog, int time) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("testTimeKey", time);
-        editor.apply();
-
-        Toast.makeText(this, "Test duration is set on "+time+" seconds.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onSettingsDialogNegativeClick(DialogFragment dialog) {
-
     }
 
     @Override
