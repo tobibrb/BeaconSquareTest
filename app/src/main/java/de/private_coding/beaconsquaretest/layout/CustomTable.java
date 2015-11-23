@@ -34,6 +34,10 @@ public class CustomTable extends TableLayout {
         return buttonMap.get(key);
     }
 
+    public static Map<String, ImageButton> getImageButtons() {
+        return buttonMap;
+    }
+
     public CustomTable(final AppCompatActivity activity, final Context context, int height, int width) {
         super(context);
 

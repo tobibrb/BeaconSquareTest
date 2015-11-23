@@ -1,5 +1,6 @@
 package de.private_coding.beaconsquaretest;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -7,11 +8,13 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.onyxbeacon.OnyxBeaconApplication;
@@ -19,6 +22,7 @@ import com.onyxbeacon.OnyxBeaconManager;
 import com.onyxbeacon.rest.auth.util.AuthenticationMode;
 
 import java.io.File;
+import java.util.Map;
 
 import de.private_coding.beaconsquaretest.csvparser.BeaconCsvParser;
 import de.private_coding.beaconsquaretest.fragment.SettingsDialogFragment;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     private BleReceiver mBleReceiver;
     private boolean bleRegistered;
     private boolean receiverRegistered;
+    private BeaconCsvParser parser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Get CSV Parser
+        this.parser = BeaconCsvParser.getInstance();
 
         // Show dialog for dimensions
         DialogFragment dialog = SizeDialogFragment.newInstance();
@@ -163,6 +171,30 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
 
             settingsDialog.show(getSupportFragmentManager(), "Settings");
             return true;
+        } else if (id == R.id.action_delete_all) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Are you sure?")
+                    .setMessage("This will delete all data for this test case!")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!parser.removeTestData()) {
+                                Toast.makeText(MainActivity.this, "No file to delete.", Toast.LENGTH_LONG).show();
+                            }
+                            Map<String, ImageButton> imageButtonMap = CustomTable.getImageButtons();
+                            for (String key : imageButtonMap.keySet()) {
+                                imageButtonMap.get(key).setImageResource(R.drawable.red);
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
         }
 
         return super.onOptionsItemSelected(item);

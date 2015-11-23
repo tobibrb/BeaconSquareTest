@@ -9,4 +9,5 @@
     <string name="min_rssi">Min. RSSI</string>
     <string name="max_rssi">Max. RSSI</string>
     <string name="hint_testTime">Test Time</string>
+    <string name="action_delete">Delete all test data</string>
 </resources>

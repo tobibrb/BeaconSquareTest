@@ -95,13 +95,18 @@ public class BeaconCsvParser {
         }
     }
 
+    public boolean removeTestData() {
+        File file = new File(csvFile);
+        return file.delete();
+    }
+
     private List<String[]> getAll() {
         List<String[]> entries = new ArrayList<>();
         try {
             CSVReader reader = new CSVReader(new FileReader(csvFile));
             entries = reader.readAll();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d(LOGGER, String.format("Failed to read file: %s. Does it exist?", csvFile));
         }
         return entries;
     }
@@ -111,7 +116,7 @@ public class BeaconCsvParser {
         boolean deleted = file.delete();
         List<String[]> update = new ArrayList<>();
         if (!deleted) {
-            throw new IOException("CSV File cannot be deleted");
+            throw new IOException("CSV File can't be deleted");
         }
         for (BeaconTestData beacon : data) {
             update.add(new String[]{
@@ -128,7 +133,7 @@ public class BeaconCsvParser {
             writer.writeAll(update);
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d(LOGGER, "Can't write file!");
         }
     }
 }
