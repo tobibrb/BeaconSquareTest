@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.onyxbeacon.OnyxBeaconApplication;
@@ -203,11 +204,23 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     // Methods for FragmentListener
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int height, int width) {
-        // CustomTable
-        BeaconCsvParser.setCsvFile(height, width);
-        CustomTable table = new CustomTable(this, this, height, width);
-        CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
-        rootLayout.addView(table);
+
+        if (height > 15 || width > 15) {
+            Toast.makeText(this, "Size > 15 not supported!", Toast.LENGTH_LONG).show();
+            DialogFragment newDialog = SizeDialogFragment.newInstance();
+            newDialog.show(getSupportFragmentManager(), "SizeDialogFragment");
+        } else if (width < height) {
+            Toast.makeText(this, "Height must be >= width!", Toast.LENGTH_LONG).show();
+            DialogFragment newDialog = SizeDialogFragment.newInstance();
+            newDialog.show(getSupportFragmentManager(), "SizeDialogFragment");
+        } else {
+            // CustomTable
+            BeaconCsvParser.setCsvFile(height, width);
+            CustomTable table = new CustomTable(this, this, height, width);
+            RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.content_main);
+            //CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+            rootLayout.addView(table);
+        }
     }
 
     @Override
@@ -215,7 +228,8 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         // CustomTable
         BeaconCsvParser.setCsvFile(4, 4);
         CustomTable table = new CustomTable(this, this, 4, 4);
-        CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.content_main);
+        //CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
     }
 }

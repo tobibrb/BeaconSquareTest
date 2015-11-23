@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import de.private_coding.beaconsquaretest.R;
 
@@ -21,7 +22,8 @@ public class SizeDialogFragment extends DialogFragment {
     // Use this instance of the interface to deliver action events
     SizeFragmentListener mListener;
 
-    public SizeDialogFragment() {}
+    public SizeDialogFragment() {
+    }
 
 
     public static SizeDialogFragment newInstance() {
@@ -56,7 +58,9 @@ public class SizeDialogFragment extends DialogFragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // Send the positive button event back to the host activity
-                mListener.onDialogPositiveClick(SizeDialogFragment.this, Integer.parseInt(heightText.getText().toString()), Integer.parseInt(widthText.getText().toString()));
+                mListener.onDialogPositiveClick(SizeDialogFragment.this,
+                        Integer.parseInt(heightText.getText().toString()),
+                        Integer.parseInt(widthText.getText().toString()));
             }
         });
         builder.setNegativeButton("Default", new DialogInterface.OnClickListener() {

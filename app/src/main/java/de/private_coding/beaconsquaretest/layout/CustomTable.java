@@ -53,24 +53,25 @@ public class CustomTable extends TableLayout {
         Resources r = context.getResources();
         int heightInPx = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                dpWidth/width,
+                dpWidth / width,
                 r.getDisplayMetrics()
         );
         int marginInPx = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                5,
+                3,
                 r.getDisplayMetrics()
         );
 
         // Parameter for Views
         TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
         TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-        TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(0, heightInPx, 1f);
+        TableRow.LayoutParams buttonParams;
+        buttonParams = new TableRow.LayoutParams(0, heightInPx, 1f);
         buttonParams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx);
 
         // Set parameter for TableLayout
         this.setLayoutParams(tableParams);
-        this.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+        this.setGravity(Gravity.CENTER_HORIZONTAL);
         this.setShrinkAllColumns(true);
         this.setStretchAllColumns(true);
 
@@ -79,7 +80,7 @@ public class CustomTable extends TableLayout {
             TableRow row = new TableRow(context);
             row.setLayoutParams(rowParams);
             for (int j = 0; j < width; j++) {
-                List<BeaconTestData> list = parser.getTestData(i,j);
+                List<BeaconTestData> list = parser.getTestData(i, j);
                 final ImageButton button = new ImageButton(context);
                 button.setLayoutParams(buttonParams);
                 if (list.isEmpty()) {
