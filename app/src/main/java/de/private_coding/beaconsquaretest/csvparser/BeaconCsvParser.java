@@ -102,11 +102,13 @@ public class BeaconCsvParser {
 
     private List<String[]> getAll() {
         List<String[]> entries = new ArrayList<>();
-        try {
-            CSVReader reader = new CSVReader(new FileReader(csvFile));
-            entries = reader.readAll();
-        } catch (IOException e) {
-            Log.d(LOGGER, String.format("Failed to read file: %s. Does it exist?", csvFile));
+        if (new File(csvFile).exists()) {
+            try {
+                CSVReader reader = new CSVReader(new FileReader(csvFile));
+                entries = reader.readAll();
+            } catch (IOException e) {
+                Log.d(LOGGER, String.format("Failed to read file: %s. Does it exist?", csvFile));
+            }
         }
         return entries;
     }
