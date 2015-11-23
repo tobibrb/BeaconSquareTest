@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     private boolean bleRegistered;
     private boolean receiverRegistered;
     private BeaconCsvParser parser;
+    private RelativeLayout rootLayout;
+    private boolean mailSent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Get rootLayout for table
+
+        rootLayout = (RelativeLayout) findViewById(R.id.content_main);
 
         // Get CSV Parser
         this.parser = BeaconCsvParser.getInstance();
@@ -101,12 +108,17 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CSV Scan");
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "See attachment");
                 File attachment = new File(BeaconCsvParser.getCsvFile());
-                try {
-                    Uri uri = Uri.fromFile(attachment);
-                    emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                    startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
-                } catch (NullPointerException e) {
-                    Toast.makeText(MainActivity.this, "CSV File not found",Toast.LENGTH_LONG).show();
+                if (attachment.exists()) {
+                    try {
+                        Uri uri = Uri.fromFile(attachment);
+                        emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                        startActivity(Intent.createChooser(emailIntent, "Pick an Email provider"));
+                        mailSent = true;
+                    } catch (NullPointerException e) {
+                        Log.e(LOGGER, "Failed with Exception: " + e.getMessage());
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "CSV File not found", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -196,8 +208,50 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
                     })
                     .create()
                     .show();
+            return true;
+        } else if (id == R.id.action_new_test) {
+            if (!mailSent) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Are you sure?")
+                        .setMessage("It seems that your last test was not sent per mail! Create new test anyway?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                rootLayout.removeAllViews();
+                                DialogFragment newDialog = SizeDialogFragment.newInstance();
+                                newDialog.show(getSupportFragmentManager(), "SizeDialogFragment");
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Are you sure?")
+                        .setMessage("Your test data is saved as CSV file on your external storage. Create new test?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                rootLayout.removeAllViews();
+                                DialogFragment newDialog = SizeDialogFragment.newInstance();
+                                newDialog.show(getSupportFragmentManager(), "SizeDialogFragment");
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -217,9 +271,8 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
             // CustomTable
             BeaconCsvParser.setCsvFile(height, width);
             CustomTable table = new CustomTable(this, this, height, width);
-            RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.content_main);
-            //CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
             rootLayout.addView(table);
+            mailSent = false;
         }
     }
 
@@ -228,8 +281,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         // CustomTable
         BeaconCsvParser.setCsvFile(4, 4);
         CustomTable table = new CustomTable(this, this, 4, 4);
-        RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.content_main);
-        //CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
+        mailSent = false;
     }
 }
