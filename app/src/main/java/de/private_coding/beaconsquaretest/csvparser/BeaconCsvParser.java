@@ -18,13 +18,11 @@ import java.util.List;
  */
 public class BeaconCsvParser {
 
-    private String csv;
+    private static String csvFile;
     private static BeaconCsvParser sInstance;
     private final String LOGGER = BeaconCsvParser.class.getSimpleName();
 
-    public BeaconCsvParser() {
-        this.csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scan.csv";
-    }
+    public BeaconCsvParser() {}
 
     public static BeaconCsvParser getInstance() {
         if (sInstance == null) {
@@ -33,11 +31,21 @@ public class BeaconCsvParser {
         return sInstance;
     }
 
-    public void createTestData(String rowColumn, int major, int minor, int rssi, Date date) {
+    public static void setCsvFile(int height, int width) {
+        BeaconCsvParser.csvFile = android.os.Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + "/scan_" + height + "x" + width + ".csv";
+    }
+
+    public static String getCsvFile() {
+        return csvFile;
+    }
+
+    public void createTestData(int row, int column, int major, int minor, int rssi, Date date) {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(csv, true));
+            CSVWriter writer = new CSVWriter(new FileWriter(csvFile, true));
             writer.writeNext(new String[]{
-                    rowColumn,
+                    String.valueOf(row),
+                    String.valueOf(column),
                     String.valueOf(date.getTime()),
                     String.valueOf(major),
                     String.valueOf(minor),
@@ -53,8 +61,14 @@ public class BeaconCsvParser {
         List<BeaconTestData> data = new ArrayList<>();
         List<String[]> entries = getAll();
         for (String[] strings : entries) {
-            if (strings[0].equals(String.format("%s/%s", row, column))) {
-                data.add(new BeaconTestData(strings[0], Integer.parseInt(strings[2]), Integer.parseInt(strings[3]), Integer.parseInt(strings[4]), Long.parseLong(strings[1])));
+            if (strings[0].equals(String.valueOf(row)) && strings[1].equals(String.valueOf(column))) {
+                data.add(new BeaconTestData(
+                        Integer.parseInt(strings[0]),
+                        Integer.parseInt(strings[1]),
+                        Integer.parseInt(strings[3]),
+                        Integer.parseInt(strings[4]),
+                        Integer.parseInt(strings[5]),
+                        Long.parseLong(strings[2])));
             }
         }
         return data;
@@ -64,8 +78,14 @@ public class BeaconCsvParser {
         List<BeaconTestData> data = new ArrayList<>();
         List<String[]> entries = getAll();
         for (String[] strings : entries) {
-            if (!strings[0].equals(String.format("%s/%s", row, column))) {
-                data.add(new BeaconTestData(strings[0], Integer.parseInt(strings[2]), Integer.parseInt(strings[3]), Integer.parseInt(strings[4]), Long.parseLong(strings[1])));
+            if (!(strings[0].equals(String.valueOf(row)) && strings[1].equals(String.valueOf(column)))) {
+                data.add(new BeaconTestData(
+                        Integer.parseInt(strings[0]),
+                        Integer.parseInt(strings[1]),
+                        Integer.parseInt(strings[3]),
+                        Integer.parseInt(strings[4]),
+                        Integer.parseInt(strings[5]),
+                        Long.parseLong(strings[2])));
             }
         }
         try {
@@ -78,7 +98,7 @@ public class BeaconCsvParser {
     private List<String[]> getAll() {
         List<String[]> entries = new ArrayList<>();
         try {
-            CSVReader reader = new CSVReader(new FileReader(csv));
+            CSVReader reader = new CSVReader(new FileReader(csvFile));
             entries = reader.readAll();
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,7 +107,7 @@ public class BeaconCsvParser {
     }
 
     private void updateCsv(List<BeaconTestData> data) throws IOException {
-        File file = new File(csv);
+        File file = new File(csvFile);
         boolean deleted = file.delete();
         List<String[]> update = new ArrayList<>();
         if (!deleted) {
@@ -95,7 +115,8 @@ public class BeaconCsvParser {
         }
         for (BeaconTestData beacon : data) {
             update.add(new String[]{
-                    beacon.getRowColumn(),
+                    String.valueOf(beacon.getRow()),
+                    String.valueOf(beacon.getColumn()),
                     String.valueOf(beacon.getDate().getTime()),
                     String.valueOf(beacon.getMajor()),
                     String.valueOf(beacon.getMinor()),
@@ -103,7 +124,7 @@ public class BeaconCsvParser {
             });
         }
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(csv, true));
+            CSVWriter writer = new CSVWriter(new FileWriter(csvFile, true));
             writer.writeAll(update);
             writer.close();
         } catch (IOException e) {

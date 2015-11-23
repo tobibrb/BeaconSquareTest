@@ -7,22 +7,28 @@ import java.util.Date;
  */
 public class BeaconTestData {
 
-    private String rowColumn;
+    private int row;
+    private int column;
     private int major;
     private int minor;
     private int rssi;
     private Date date;
 
-    public BeaconTestData(String rowColumn, int major, int minor, int rssi, long date) {
-        this.rowColumn = rowColumn;
+    public BeaconTestData(int row, int column, int major, int minor, int rssi, long date) {
+        this.row = row;
+        this.column = column;
         this.major = major;
         this.minor = minor;
         this.rssi = rssi;
         this.date = new Date(date);
     }
 
-    public String getRowColumn() {
-        return rowColumn;
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
     }
 
     public int getMajor() {

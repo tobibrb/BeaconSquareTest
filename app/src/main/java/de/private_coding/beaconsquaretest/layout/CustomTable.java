@@ -15,9 +15,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.private_coding.beaconsquaretest.R;
+import de.private_coding.beaconsquaretest.csvparser.BeaconCsvParser;
+import de.private_coding.beaconsquaretest.csvparser.BeaconTestData;
 import de.private_coding.beaconsquaretest.fragment.TestDetailsDialogFragment;
 
 /**
@@ -33,6 +36,10 @@ public class CustomTable extends TableLayout {
 
     public CustomTable(final AppCompatActivity activity, final Context context, int height, int width) {
         super(context);
+
+        // CSV Parser
+
+        BeaconCsvParser parser = BeaconCsvParser.getInstance();
 
         // Display metric
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -68,9 +75,14 @@ public class CustomTable extends TableLayout {
             TableRow row = new TableRow(context);
             row.setLayoutParams(rowParams);
             for (int j = 0; j < width; j++) {
+                List<BeaconTestData> list = parser.getTestData(i,j);
                 final ImageButton button = new ImageButton(context);
                 button.setLayoutParams(buttonParams);
-                button.setImageResource(R.drawable.red);
+                if (list.isEmpty()) {
+                    button.setImageResource(R.drawable.red);
+                } else {
+                    button.setImageResource(R.drawable.yellow);
+                }
                 button.setScaleType(ImageView.ScaleType.CENTER);
                 final int finalI = i;
                 final int finalJ = j;

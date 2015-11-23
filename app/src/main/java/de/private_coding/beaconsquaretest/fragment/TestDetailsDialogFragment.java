@@ -73,7 +73,7 @@ public class TestDetailsDialogFragment extends DialogFragment {
         builder.setPositiveButton("Start test", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                new CaptureTask(getActivity(), String.format("%s/%s", row, column)).execute();
+                new CaptureTask(getActivity(), row, column).execute();
             }
         });
         builder.setNeutralButton("Clear Data", new DialogInterface.OnClickListener() {

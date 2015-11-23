@@ -19,7 +19,8 @@ public class BeaconListener implements OnyxBeaconsListener {
     private static BeaconListener sInstance;
     private BeaconCsvParser parser;
     private boolean capture;
-    private String rowColumn;
+    private int row;
+    private int column;
 
     public BeaconListener() {
         super();
@@ -45,8 +46,9 @@ public class BeaconListener implements OnyxBeaconsListener {
         this.capture = capture;
     }
 
-    public void setRowColumn(String rowColumn) {
-        this.rowColumn = rowColumn;
+    public void setRowColumn(int row, int column) {
+        this.row = row;
+        this.column = column;
     }
 
     @Override
@@ -56,7 +58,8 @@ public class BeaconListener implements OnyxBeaconsListener {
             for (IBeacon beacon : list) {
                 Log.d(LOGGER, String.format("Adding data for Beacon: %s, %s", beacon.getMajor(), beacon.getMinor()));
                 this.parser.createTestData(
-                        this.rowColumn,
+                        this.row,
+                        this.column,
                         beacon.getMajor(),
                         beacon.getMinor(),
                         beacon.getRssi(),

@@ -18,16 +18,18 @@ import static java.lang.Thread.sleep;
  */
 public class CaptureTask extends AsyncTask<Void,Void,Void> {
 
-    private String rowColumn;
+    private int row;
+    private int column;
     private BeaconListener listener;
     private ProgressDialog dialog;
     private Context context;
     private ImageButton button;
 
 
-    public CaptureTask(Context context, String rowColumn) {
+    public CaptureTask(Context context, int row, int column) {
         super();
-        this.rowColumn = rowColumn;
+        this.row = row;
+        this.column = column;
         this.listener = BeaconListener.getInstance();
         this.context = context;
     }
@@ -35,7 +37,7 @@ public class CaptureTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        button = CustomTable.getImageButton(rowColumn);
+        button = CustomTable.getImageButton(String.format("%s/%s", this.row, this.column));
         button.setImageResource(R.drawable.yellow);
         dialog = ProgressDialog.show(context, "",
                 "Doing stuff and things. Please wait...", false);
@@ -43,7 +45,7 @@ public class CaptureTask extends AsyncTask<Void,Void,Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        listener.setRowColumn(rowColumn);
+        listener.setRowColumn(this.row, this.column);
         listener.setCapture(true);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);

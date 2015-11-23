@@ -20,6 +20,7 @@ import com.onyxbeacon.rest.auth.util.AuthenticationMode;
 
 import java.io.File;
 
+import de.private_coding.beaconsquaretest.csvparser.BeaconCsvParser;
 import de.private_coding.beaconsquaretest.fragment.SettingsDialogFragment;
 import de.private_coding.beaconsquaretest.fragment.SizeDialogFragment;
 import de.private_coding.beaconsquaretest.layout.CustomTable;
@@ -90,8 +91,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
                 emailIntent.setType("message/rfc822");
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CSV Scan");
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "See attachment");
-                String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/scan.csv";
-                File attachment = new File(csv);
+                File attachment = new File(BeaconCsvParser.getCsvFile());
                 try {
                     Uri uri = Uri.fromFile(attachment);
                     emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int height, int width) {
         // CustomTable
+        BeaconCsvParser.setCsvFile(height, width);
         CustomTable table = new CustomTable(this, this, height, width);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
@@ -180,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // CustomTable
+        BeaconCsvParser.setCsvFile(4, 4);
         CustomTable table = new CustomTable(this, this, 4, 4);
         CoordinatorLayout rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         rootLayout.addView(table);
