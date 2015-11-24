@@ -1,13 +1,17 @@
 package de.private_coding.beaconsquaretest;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -50,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     private RelativeLayout rootLayout;
     private boolean mailSent;
 
+    private static final int REQUEST_WRITE_STORAGE = 112;
+    private static final int REQUEST_FINE_LOCATION = 113;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,23 +72,36 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         // Get CSV Parser
         this.parser = BeaconCsvParser.getInstance();
 
+
         // Show dialog for dimensions
         DialogFragment dialog = SizeDialogFragment.newInstance();
         dialog.show(getSupportFragmentManager(), "SizeDialogFragment");
 
-        // get BeaconManger instance and check for Bluetooth
-        mBeaconManger = OnyxBeaconApplication.getOnyxBeaconManager(this);
-        mBeaconManger.initSDK(AuthenticationMode.CLIENT_SECRET_BASED);
-        if (!mBeaconManger.isBluetoothAvailable()) {
-            mBeaconManger.enableBluetooth();
+
+        // Check for write permission on external storage (Android 6.0 only)
+        boolean hasPermission = (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE);
+        } else {
+            // init Onyx SDK if permission is granted
+            initOnyxSdk();
+        }
+
+        // Check for location permission (Android 6.0 only)
+        hasPermission = (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
+        if (!hasPermission) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION);
         }
 
         // get BeaconListener
         BeaconListener beaconListener = BeaconListener.getInstance();
-
-        // Enable scanning for beacons
-        mBeaconManger.setForegroundMode(true);
-        mBeaconManger.setAPIContentEnabled(true);
 
         // Register for Onyx content
         mContentReceiver = ContentReceiver.getInstance();
@@ -129,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
     protected void onPause() {
         super.onPause();
         // Set scanner in background mode (power saving)
-        mBeaconManger.setForegroundMode(false);
+        if (mBeaconManger != null) {
+            mBeaconManger.setForegroundMode(false);
+        }
         // Unregister BLE receiver
         if (bleRegistered) {
             unregisterReceiver(mBleReceiver);
@@ -156,11 +178,13 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
         receiverRegistered = true;
 
         // check for Bluetooth
-        if (mBeaconManger.isBluetoothAvailable()) {
-            mBeaconManger.setForegroundMode(true);
-        } else {
-            Toast.makeText(this, "Please turn on bluetooth", Toast.LENGTH_LONG).show();
-            mBeaconManger.enableBluetooth();
+        if (mBeaconManger != null) {
+            if (mBeaconManger.isBluetoothAvailable()) {
+                mBeaconManger.setForegroundMode(true);
+            } else {
+                Toast.makeText(this, "Please turn on bluetooth", Toast.LENGTH_LONG).show();
+                mBeaconManger.enableBluetooth();
+            }
         }
     }
 
@@ -253,6 +277,35 @@ public class MainActivity extends AppCompatActivity implements SizeDialogFragmen
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // if permission is granted init Onyx SDK
+                    initOnyxSdk();
+                } else {
+                    Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private void initOnyxSdk() {
+        // get BeaconManger instance and check for Bluetooth
+        mBeaconManger = OnyxBeaconApplication.getOnyxBeaconManager(this);
+
+        mBeaconManger.initSDK(AuthenticationMode.CLIENT_SECRET_BASED);
+        if (!mBeaconManger.isBluetoothAvailable()) {
+            mBeaconManger.enableBluetooth();
+        }
+
+        // Enable scanning for beacons
+        mBeaconManger.setForegroundMode(true);
+        mBeaconManger.setAPIContentEnabled(true);
     }
 
     // Methods for FragmentListener
